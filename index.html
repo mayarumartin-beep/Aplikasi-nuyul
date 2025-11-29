@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penyimpan Link Modern</title>
+
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+    body{
+        background:linear-gradient(135deg,#4b59ff,#7f6bff);
+        height:100vh;display:flex;align-items:center;padding-left:20px;
+    }
+
+    .card{
+        width:350px;background:white;border-radius:18px;
+        padding:25px;box-shadow:0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    h2{text-align:left;font-size:22px;margin-bottom:20px;font-weight:700;}
+
+    input{
+        width:100%;margin-top:10px;padding:12px;border:none;
+        border-radius:10px;background:#f2f2f2;font-size:15px;
+        outline:none;
+    }
+
+    button{
+        margin-top:12px;width:100%;padding:12px;border:none;
+        font-size:16px;border-radius:10px;color:white;
+        font-weight:600;cursor:pointer;transition:0.3s;
+    }
+
+    #save{background:#00c3ff;}
+    #save:hover{background:#008cff;}
+
+    .list{margin-top:20px;max-height:55vh;overflow-y:auto;}
+
+    .item{
+        background:#f9f8ff;border-left:6px solid #6a5bff;
+        padding:12px;border-radius:10px;margin-bottom:12px;
+        animation:fade .4s;
+    }
+
+    .title{font-size:15px;font-weight:700;}
+    .url{font-size:13px;color:#333;margin:5px 0;}
+
+    .btnbox{display:flex;gap:8px;margin-top:7px;}
+
+    .copy{flex:1;background:#3ddc84;}
+    .copy:hover{background:#23b263;}
+
+    .hapus{flex:1;background:#ff5252;}
+    .hapus:hover{background:#d63a3a;}
+
+    @keyframes fade{from{opacity:0;transform:translateX(-10px);}to{opacity:1;}}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>📌 Penyimpan Link Keren</h2>
+
+    <input id="name" placeholder="Nama link... (contoh: Video Tutorial)">
+    <input id="url" placeholder="Masukkan link URL...">
+
+    <button id="save">Simpan Link</button>
+
+    <div class="list" id="list"></div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("links")) || [];
+const list = document.getElementById("list");
+
+function tampilkan(){
+    list.innerHTML="";
+    data.forEach((item,i)=>{
+        list.innerHTML+=`
+        <div class="item">
+            <div class="title">${item.name}</div>
+            <div class="url">${item.url}</div>
+
+            <div class="btnbox">
+                <button class="copy" onclick="copy('${item.url}')">Copy</button>
+                <button class="hapus" onclick="hapus(${i})">Hapus</button>
+            </div>
+        </div>`;
+    });
+}
+tampilkan();
+
+document.getElementById("save").onclick = ()=>{
+    let name=document.getElementById("name").value;
+    let url=document.getElementById("url").value;
+
+    if(name==""||url=="") return alert("Nama & Link wajib diisi");
+
+    data.push({name,url});
+    localStorage.setItem("links",JSON.stringify(data));
+    tampilkan();
+    document.getElementById("name").value="";
+    document.getElementById("url").value="";
+};
+
+function hapus(i){
+    data.splice(i,1);
+    localStorage.setItem("links",JSON.stringify(data));
+    tampilkan();
+}
+
+function copy(text){
+    navigator.clipboard.writeText(text);
+    alert("Link disalin!");
+}
+</script>
+
+</body>
+</html>
